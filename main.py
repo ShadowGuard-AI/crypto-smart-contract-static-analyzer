@@ -1,8 +1,6 @@
 import argparse
 import logging
 import sys
-from cryptography.hazmat.primitives import hashes
-from cryptography.exceptions import InvalidTag
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -26,6 +24,8 @@ def analyze_contract(contract_code, output_file):
         output_file (str): The file to save the analysis results.
     """
     try:
+        # Start from a fresh report so reruns do not accumulate stale results.
+        open(output_file, "w").close()
         logging.info("Starting smart contract analysis...")
 
         # Basic checks (replace with more sophisticated analysis)
@@ -35,6 +35,10 @@ def analyze_contract(contract_code, output_file):
             log_warning("Potential timestamp dependence detected. This can be manipulated by miners.", output_file)
         if "unchecked" in contract_code:
             log_warning("Potential unchecked arithmetic operations detected. This could lead to overflow/underflow.", output_file)
+        if ".call{" in contract_code or ".call.value(" in contract_code or ".call(" in contract_code:
+            log_warning("Low level external call detected (.call). If state is updated after the call, this pattern can enable reentrancy.", output_file)
+        if "delegatecall" in contract_code:
+            log_warning("Potential delegatecall usage detected. Delegating to untrusted code can compromise contract storage and state.", output_file)
 
         # Example: Check for potential weak random number generation
         if "keccak256(block.difficulty, block.timestamp)" in contract_code:
