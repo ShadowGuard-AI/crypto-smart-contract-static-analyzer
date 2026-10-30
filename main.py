@@ -54,8 +54,14 @@ def analyze_contract(contract_code, output_file):
         log_info("Analysis completed.", output_file)
 
     except Exception as e:
+        # Do not call log_error here: the failure is often that the
+        # output file itself cannot be opened (bad directory), and
+        # log_error would raise the same error again and bury the
+        # original one under a traceback. Report on the console only
+        # and let main turn the failure into an exit code.
         logging.error(f"An error occurred during analysis: {e}")
-        log_error(f"Analysis failed due to error: {e}", output_file)
+        return False
+    return True
 
 def log_info(message, output_file):
     """Logs an info message to the console and the output file."""
@@ -101,7 +107,8 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)  # Set logging to debug level
 
     contract_code = validate_input(args.contract_code)
-    analyze_contract(contract_code, args.output)
+    if not analyze_contract(contract_code, args.output):
+        sys.exit(1)
 
 # Example usage:
 # python main.py contract.sol --output analysis.txt
