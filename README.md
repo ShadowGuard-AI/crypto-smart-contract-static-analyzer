@@ -1,3 +1,5 @@
+![Banner](banner.png)
+
 # crypto-smart-contract-static-analyzer
 
 A small pattern matching static analyzer for smart contract source files. It reads one contract file as text and reports a short list of known risky patterns. It does not build a control flow graph, parse Solidity, or prove that a contract is safe or exploitable.
