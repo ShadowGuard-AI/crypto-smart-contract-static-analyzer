@@ -66,3 +66,9 @@ A missing input file prints `Error: File not found: <path>` and exits with statu
 ## License
 
 Copyright (c) ShadowGuardAI
+
+## Diagrams and maps
+
+I drew the tool out in [crypto-smart-contract-static-analyzer-Visuals](crypto-smart-contract-static-analyzer-Visuals/): an architecture diagram, a data-flow diagram, a flowchart of a scan, and a product map, with the written product map, statistics with citations, and the roadmap in [VISUAL.md](crypto-smart-contract-static-analyzer-Visuals/VISUAL.md). Every sheet also ships as a PNG photograph of the paper page beside its SVG.
+
+![Smart contract analyzer architecture](crypto-smart-contract-static-analyzer-Visuals/architecture.svg)
