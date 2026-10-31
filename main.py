@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -107,6 +108,14 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)  # Set logging to debug level
 
     contract_code = validate_input(args.contract_code)
+    # Refuse to let the report overwrite the contract being analyzed.
+    # Compare resolved paths so a relative spelling of the same file
+    # and a symlink to it are refused as well. This check runs before
+    # analyze_contract opens the output path and truncates it.
+    if Path(args.contract_code).resolve() == Path(args.output).resolve():
+        logging.error("Output path is the same file as the input contract file.")
+        print(f"Error: Output file must not be the same as the input file: {args.output}")
+        sys.exit(1)
     if not analyze_contract(contract_code, args.output):
         sys.exit(1)
 

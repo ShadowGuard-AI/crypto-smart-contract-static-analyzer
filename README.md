@@ -33,7 +33,7 @@ python3 main.py [-h] [--output OUTPUT] [--verbose] contract_code
 ```
 
 - `contract_code`: path to the contract source or text file to scan (required)
-- `--output OUTPUT`, `-o OUTPUT`: report file. Default: `analysis_report.txt`. The file is overwritten at the start of each run.
+- `--output OUTPUT`, `-o OUTPUT`: report file. Default: `analysis_report.txt`. The file is overwritten at the start of each run. The output path must not be the contract file itself: if the resolved output path is the same file as the input, including a relative spelling of the same path or a symlink to it, the tool prints an error and exits 1 before writing anything, so the contract source is left unchanged.
 - `--verbose`, `-v`: set logging to debug level
 - `-h`: show help and exit
 
