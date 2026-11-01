@@ -22,7 +22,7 @@ A small pattern matching static analyzer for smart contract source files. It rea
 ## Install
 
 ```bash
-git clone https://github.com/ShadowGuardAI/crypto-smart-contract-static-analyzer.git
+git clone https://github.com/ShadowGuard-AI/crypto-smart-contract-static-analyzer.git
 cd crypto-smart-contract-static-analyzer
 ```
 
