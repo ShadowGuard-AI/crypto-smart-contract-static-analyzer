@@ -30,6 +30,13 @@ def analyze_contract(contract_code, output_file):
         logging.info("Starting smart contract analysis...")
 
         # Basic checks (replace with more sophisticated analysis)
+        # Every check in this function is a substring search over the
+        # raw file text. Nothing is parsed, so a word inside a comment
+        # or a string literal triggers the same warning as real code,
+        # and code written with different spacing or ordering passes
+        # unseen. I keep the checks because a rough signal is useful,
+        # but a clean report means none of these exact strings appear,
+        # not that the contract is free of these patterns.
         if "tx.origin" in contract_code:
             log_warning("Potential tx.origin usage detected. This can be vulnerable to phishing attacks.", output_file)
         if "block.timestamp" in contract_code:
@@ -42,6 +49,9 @@ def analyze_contract(contract_code, output_file):
             log_warning("Potential delegatecall usage detected. Delegating to untrusted code can compromise contract storage and state.", output_file)
 
         # Example: Check for potential weak random number generation
+        # This one is the strictest of the set: the two arguments in
+        # this order with exactly this spacing. Swapped arguments or an
+        # extra space are the same weak pattern and are not caught.
         if "keccak256(block.difficulty, block.timestamp)" in contract_code:
             log_warning("Weak random number generation detected. Avoid using block.difficulty and block.timestamp for randomness.", output_file)
 
@@ -67,6 +77,10 @@ def analyze_contract(contract_code, output_file):
 def log_info(message, output_file):
     """Logs an info message to the console and the output file."""
     logging.info(message)
+    # The report file is opened, written, and closed again for every
+    # single line instead of being held open. That is slower, and it
+    # is why a crash mid analysis still leaves a report containing
+    # every line up to the failure.
     with open(output_file, "a") as f:
         f.write(f"[INFO] {message}\n")
 
