@@ -1,166 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Crypto Smart Contract Static Analyzer: what it is, how it runs, where it stops</title>
-<meta name="description" content="A small pattern matching static analyzer for smart contract source files. It reads one contract file as text and reports a short list of known risky p">
-<style>
-:root {
-  --bg: #101214; --panel: #1c1f22; --ink: #eee8dc;
-  --mut: #25292d;
-  --acc: #e8b339; --acc2: #c75432;
-  --line: #1c1f22;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink);
-  font-family: 'Trebuchet MS', sans-serif; line-height: 1.55; }
-code, pre, .mono { font-family: 'Courier New', monospace; }
-a { color: var(--acc2); }
-.hero { padding: 3rem 6vw 1rem; }
-.hero img.banner { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; }
-.logo { width: 92px; height: 92px; border-radius: 18px;
-  border: 1px solid var(--line); }
-h1 { font-size: 2.4rem; margin: 0.4em 0 0.1em; }
-h2 { border-bottom: 2px solid var(--acc); padding-bottom: 0.2em;
-  margin-top: 2em; }
-.lede { font-size: 1.15rem; max-width: 62ch; }
-main { padding: 0 6vw 3rem; max-width: 1180px; margin: 0 auto; }
-.grid { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line);
-  border-radius: 12px; padding: 1rem 1.2rem; }
-.card.pop { animation: rise 0.7s ease both; }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; } }
-pre.code { background: #101014; color: #e8e6df; padding: 1rem 1.2rem;
-  border-radius: 12px; overflow-x: auto; font-size: 0.86rem;
-  border-left: 5px solid var(--acc); }
-table { border-collapse: collapse; width: 100%; }
-td, th { border-bottom: 1px solid var(--line); padding: 0.45rem 0.6rem;
-  text-align: left; }
-.shots { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-.shots img { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; background: #f4f1e8; }
-footer { padding: 2rem 6vw; border-top: 1px solid var(--line);
-  color: var(--mut); }
-.rail { display: flex; gap: 1.2rem; align-items: flex-start; }
-.rail nav { position: sticky; top: 1rem; min-width: 180px; }
-@media (max-width: 760px) { .rail { flex-direction: column; }
-  .rail nav { position: static; } }
-@media (prefers-reduced-motion: reduce) {
-  .card.pop { animation: none; } * { scroll-behavior: auto; } }
-</style>
-</head>
-<body class="layout-rail">
-<!-- This page exists for crypto-smart-contract-static-analyzer alone: the layout (sidebar-rail),
-     the colors, and the type were picked for this project, not
-     shared with the other project pages. The code block below is
-     copied from the file it names, line for line. If it looks
-     plain, that is because the project is plain, and I would
-     rather the page match the project than dress it up. The one
-     thing I will not do here is oversell: what this project does
-     not do is stated on the page, not hidden from it. -->
-<header class="hero">
-  <img class="logo" src="assets/logo.png" alt="Crypto Smart Contract Static Analyzer logo">
-  <img class="banner" src="assets/banner.png" alt="">
-  <h1>Crypto Smart Contract Static Analyzer</h1>
-  <p class="mono"><a href="https://github.com/ShadowGuard-AI/crypto-smart-contract-static-analyzer">github.com/ShadowGuard-AI/crypto-smart-contract-static-analyzer</a></p>
-</header>
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>crypto-smart-contract-static-analyzer: The Night Soil Cart and Other Honest Hours</title>
+<style>@font-face{font-family:Disp;src:url(fonts/BodoniModaSC.ttf)}@font-face{font-family:TextF;src:url(fonts/Archivo.ttf)}
+body{background:#17100b;font-family:TextF,sans-serif;color:#d6d8dc;margin:0}main{max-width:920px;margin:0 auto;padding:28px}h1,h2{font-family:Disp,serif;color:#c7ccd4}section{background:#241a12;padding:18px 22px;margin:16px 0;border-left:8px solid #c7ccd4}img{max-width:100%}button{background:#17100b;color:#d6d8dc;border:2px solid #c7ccd4;padding:10px 14px;margin:4px;font-family:Disp,serif}.flagged{color:#ff5f9e;font-weight:bold}pre{white-space:pre-wrap}</style></head><body><main>
+<img src="intro-banner.png" alt="No letters and no painted board: cobbles in the near ground with a pail lid resting against a wheel and lantern light lying across both, the cart in profile in the middle ground with pails covered and tarpaulin roped, and rooftops, one lit window, and the gatehouse bell in silhouette in the far ground, with the first thinning of dark over the yard wall">
+<h1>crypto-smart-contract-static-analyzer: The Night Soil Cart and Other Honest Hours</h1>
+<p>Theme: The Night Soil Cart and Other Honest Hours. Headings in Bodoni Moda SC, reading text in Archivo.</p>
+<img src="logo.png" alt="A cart lantern front on against dark: iron frame in coffee black, glass panes amber with lamplight, a chrome handle arched over the top, pink spent once as one thin reflection along the lower glass edge, and the name entered under the lantern in log hand, ruled beneath"><img src="banner.png" alt="The round at its widest: a lane between yard walls an hour before dawn, the wooden cart at the left with its covered pails ranked under a tarpaulin and the carter&#x27;s lantern lit on its front rail, the yard gate shut at the right with a cat asleep on its crossbar and a bell rope hanging still, and the title painted on the cart&#x27;s side board in log hand, the only lettering in the scene">
+<img src="scene.svg" alt="The round in three depths: far, rooftops, the gatehouse bell, and one lit window, with the sky thinning by one shade over the life of the page; middle, the cart crossing the lane slowly from left to right at walking pace, lantern steady on its front rail, halting at the yard gate and beginning again as a new round; near, cobbles and the lantern&#x27;s light pool sliding past in the opposite direction, and a cat crossing once, close, unhurried, and not crossing again">
+<div><button type="button">Walk the File</button><button type="button">Choose Where the Report Stands</button><button type="button">Raise the Logging to Debug</button><button type="button">Show Help</button></div>
+<h2>Seven Checks, in Round Order</h2><h2>A Comment Stops the Round Too</h2><h2>The Report Empties Before It Fills</h2><h2>The Contract Is Never the Report</h2>
+<section><h2>Seven Checks, in Round Order</h2><p>One contract file comes in as plain text. Seven checks walk it in a fixed order. First, tx.origin, flagged for phishing risk. Second, block.timestamp, flagged for timestamp dependence. Third, the literal word unchecked, flagged for arithmetic outside the usual overflow guard. Fourth, low level external calls in three spellings, .call{ and .call.value( and .call(, flagged with the reentrancy caution attached. Fifth, delegatecall, flagged for what delegating to untrusted code can do to storage. Sixth, one exact weak randomness string joining a block difficulty term and a block timestamp term inside a keccak256 call, in that order, with that spacing. Seventh, an informational note, not a warning, when msg.data and keccak256 both appear anywhere in the file. The boundary stands on the same page: nothing is parsed, no control flow is built, no safety is proved, no exploit is proved.</p></section>
+<section><h2>A Comment Stops the Round Too</h2><p>Matching is substring matching on raw text. A listed phrase inside a comment stops the round exactly as the same phrase in live code does. A listed phrase inside a string literal does the same. A pattern written with different spacing or a different argument order walks past unseen. A clean report means the seven strings were absent. It means that, and it does not mean the contract is free of the faults the strings point at.</p></section>
+<section><h2>The Report Empties Before It Fills</h2><p>The report file is emptied at the start of each run, before findings are entered. Findings are logged to the console and appended to the report as [WARNING] or [INFO] lines during the run, each line opened, written, and closed on its own, so a failure partway leaves a report holding every line up to the failure. One refusal guards the whole entry: where the resolved output path is the input file itself, by relative spelling or by symlink as much as by direct naming, the tool prints an error and exits 1 before writing anything, and the contract is left unchanged.</p></section>
+<section><h2>Endings</h2><p>A missing input file prints Error: File not found: followed by the path, and exits 1. An input file that cannot be read exits 1. A refused output path exits 1. An analysis that fails partway, through an output path that cannot be opened, exits 1 with its partial report left standing. A finished round exits 0, whether its report holds six warnings, one warning, or none beyond its closing information lines.</p></section>
+<section><h2>Licence</h2><p>The README licence line is shown as printed in the record below and flagged here in place: it names the organisation in an unhyphenated form. The separate LICENSE file holds the MIT License. The two stand side by side, unreconciled, as they stand in the repo.</p></section>
 
-<main>
-  <section class="rail">
-    <nav aria-label="on this page">
-      <p class="mono"><a href="#run">Run it</a><br>
-      <a href="#files">The files</a><br>
-      <a href="#sheets">The sheets</a><br>
-      <a href="https://github.com/ShadowGuard-AI/crypto-smart-contract-static-analyzer">The repo</a></p>
-    </nav>
-    <div>
-      <p class="lede">A small pattern matching static analyzer for smart contract source files. It reads one contract file as text and reports a short list of known risky patterns. It does not build a control flow graph, parse Solidity, or prove that a contract is safe or exploitable.</p>
-      <div class="grid">
-        <div class="card pop"><h3>What it is</h3>
-          <p>Crypto Smart Contract Static Analyzer: 5 files, 186 counted
-          lines across Python 118, Markdown 68, Text 0. One job, done in the
-          open, in files you can read.</p></div>
-        <div class="card pop"><h3>The biggest piece</h3>
-          <p><code>main.py</code> carries the most
-          lines. If the project grows, that file is where the growth
-          lands first, for better or worse.</p></div>
-        <div class="card pop"><h3>The honest gap</h3>
-          <p>No test files yet. That is the honest gap, and the roadmap in the visuals folder says what the first one should cover.</p></div>
-      </div>
-      <section id="run">
-        <h2>Run it</h2>
-        <p>The repo README has the exact commands for this one. The
-        shape is the shape for most of my projects: clone it, read the
-        top file first so you know what will happen, then run it on
-        something you do not mind breaking.</p>
-        <p class="mono">$ git clone https://github.com/ShadowGuard-AI/crypto-smart-contract-static-analyzer.git<br>$ cd crypto-smart-contract-static-analyzer</p>
-      </section>
-      
-  <section aria-label="real code">
-    <h2>The code, as it sits in the repo</h2>
-    <p>From <code>main.py</code>, line 97 on. I did
-    not tidy it for the page. What you see is what the file has.</p>
-    <pre class="code"><code>        sys.exit(1)
+<section><h2>Code Facts Restored from the Code</h2><p>A listed phrase inside a comment stops the round exactly as the same phrase in live code does, and a listed phrase inside a string literal does the same.</p><p>The weak randomness check is exact in argument order and spacing: the same fault written with swapped arguments or an extra space passes unseen.</p><p>The report file is emptied at the start of each run, before findings are entered.</p><p>A failure partway through a round leaves the partial report standing, each line having been opened, written, and closed on its own, and that failure exits 1.</p><p>A finished round exits 0, whether its report holds warnings or none.</p></section>
+<section><h2>The Preserved Record</h2><pre># crypto-smart-contract-static-analyzer
 
-def main():
-    &quot;&quot;&quot;
-    Main function to execute the smart contract static analyzer.
-    &quot;&quot;&quot;
-    parser = setup_argparse()
-    args = parser.parse_args()
+A small pattern matching static analyzer for smart contract source files. It reads one contract file as text and reports a short list of known risky patterns. It does not build a control flow graph, parse Solidity, or prove that a contract is safe or exploitable.
 
-    if args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging to debug level
+## Checks performed
 
-    contract_code = validate_input(args.contract_code)
-    if not analyze_contract(contract_code, args.output):
-        sys.exit(1)
+- `tx.origin` usage (phishing risk)
+- `block.timestamp` usage (timestamp dependence)
+- The literal word `unchecked` (arithmetic that opts out of Solidity 0.8 overflow checks)
+- Low level external calls: `.call{`, `.call.value(`, `.call(` (a reentrancy relevant pattern if state is updated after the call)
+- `delegatecall` usage
+- Weak randomness pattern `keccak256(block.difficulty, block.timestamp)`
+- Informational note when `msg.data` and `keccak256` both appear
 
-# Example usage:
-# python main.py contract.sol --output analysis.txt
-# python main.py contract.bin -v
+## Requirements
 
-if __name__ == &quot;__main__&quot;:
-    main()</code></pre>
-  </section>
-      <section id="files">
-        <h2>The files that matter</h2>
-        <table><tr><th>File</th><th>Lines</th></tr>
-        <tr><td><code>main.py</code></td><td>118</td></tr>
-        <tr><td><code>README.md</code></td><td>68</td></tr>
-        <tr><td><code>banner.png</code></td><td>0</td></tr>
-        <tr><td><code>logo.png</code></td><td>0</td></tr>
-        <tr><td><code>requirements.txt</code></td><td>0</td></tr>
-        </table>
-        <p>Names doing the work: <span class="mono">setup_argparse, analyze_contract, log_info, log_warning, log_error, validate_input, main</span>.</p>
-      </section>
-      <section id="sheets">
-        <h2>Drawn by hand</h2>
-        <p>I sketch my projects on notebook paper so I have to
-        understand them well enough to draw them. The full set,
-        with the counts and how they were counted, is the
-        <a href="https://github.com/ShadowGuard-AI/crypto-smart-contract-static-analyzer/tree/main/crypto-smart-contract-static-analyzer-Visuals">crypto-smart-contract-static-analyzer-Visuals</a>
-        folder in the repo. Nothing is drawn over the binder holes.
-        That is a rule, not a style.</p>
-        <div class="shots">
-          <img src="assets/architecture.png" alt="Hand drawn architecture sheet for Crypto Smart Contract Static Analyzer">
-          <img src="assets/flowchart.png" alt="Hand drawn flowchart sheet for Crypto Smart Contract Static Analyzer">
-          <img src="assets/product-map.png" alt="Hand drawn product map sheet for Crypto Smart Contract Static Analyzer">
-        </div>
-      </section>
-    </div>
-  </section>
-</main>
-<footer>
-  <p>Crypto Smart Contract Static Analyzer is one of my projects. This page was written
-  from the repo itself on 2026-10-30: the counts are the
-  repo's counts, the code is the repo's code, and the gaps are the
-  repo's gaps.</p>
-</footer>
-</body>
-</html>
+- Python 3.10 or later
+- No third party packages. The tool uses only the Python standard library, so `requirements.txt` is intentionally empty.
+
+## Install
+
+```bash
+git clone https://github.com/ShadowGuard-AI/crypto-smart-contract-static-analyzer.git
+cd crypto-smart-contract-static-analyzer
+```
+
+## Usage
+
+```
+python3 main.py [-h] [--output OUTPUT] [--verbose] contract_code
+```
+
+- `contract_code`: path to the contract source or text file to scan (required)
+- `--output OUTPUT`, `-o OUTPUT`: report file. Default: `analysis_report.txt`. The file is overwritten at the start of each run. The output path must not be the contract file itself: if the resolved output path is the same file as the input, including a relative spelling of the same path or a symlink to it, the tool prints an error and exits 1 before writing anything, so the contract source is left unchanged.
+- `--verbose`, `-v`: set logging to debug level
+- `-h`: show help and exit
+
+Findings are logged to the console and appended to the report file as `[WARNING]` or `[INFO]` lines during that run.
+
+## Examples
+
+```bash
+python3 main.py contract.sol
+python3 main.py contract.sol --output analysis.txt
+python3 main.py contract.sol -v
+```
+
+For a contract containing `tx.origin` and `block.timestamp`, the report contains:
+
+```
+[WARNING] Potential tx.origin usage detected. This can be vulnerable to phishing attacks.
+[WARNING] Potential timestamp dependence detected. This can be manipulated by miners.
+[INFO] Performing basic vulnerability checks...
+[INFO] Analysis completed.
+```
+
+A missing input file prints `Error: File not found: &lt;path&gt;` and exits with status 1.
+
+## Limitations
+
+- Pure substring pattern matching on the file text. It does not understand Solidity syntax, bytecode, data flow, or whether state changes happen before or after an external call, so it cannot confirm true reentrancy or integer overflow.
+- A clean report only means none of the listed patterns were found.
+
+## License
+
+Copyright (c) ShadowGuardAI
+
+## Diagrams and maps
+
+I drew the tool out in [crypto-smart-contract-static-analyzer-Visuals](crypto-smart-contract-static-analyzer-Visuals/): an architecture diagram, a data-flow diagram, a flowchart of a scan, and a product map, with the written product map, statistics with citations, and the roadmap in [VISUAL.md](crypto-smart-contract-static-analyzer-Visuals/VISUAL.md). Every sheet also ships as a PNG photograph of the paper page beside its SVG.
+
+![Smart contract analyzer architecture](crypto-smart-contract-static-analyzer-Visuals/architecture.svg)</pre></section>
+</main></body></html>
